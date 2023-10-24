@@ -1,0 +1,40 @@
+{
+    "name": "glue-agency/craft-glue-cdn-imager-x",
+    "description": "Glue Agency image CDN for Imager X",
+    "type": "craft-plugin",
+    "license": "mit",
+    "support": {
+        "email": "support@glue.be",
+        "issues": "https://github.com/craft-glue-cdn-imager-x/issues?state=open",
+        "source": "https://github.com/craft-glue-cdn-imager-x",
+        "docs": "https://github.com/craft-glue-cdn-imager-x",
+        "rss": "https://github.com/craft-glue-cdn-imager-x/releases.atom"
+    },
+    "require": {
+        "php": ">=8.0.2",
+        "craftcms/cms": "^4.3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "GlueAgency\\CDN\\": "src/"
+        }
+    },
+    "extra": {
+        "handle": "glue-cdn-imager-x",
+        "name": "Glue CDN for Imager X",
+        "developer": "Glue Agency",
+        "documentationUrl": "https://github.com/craft-glue-cdn-imager-x",
+        "class": "GlueAgency\\CDN\\GlueTransformer"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.0.2"
+        },
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
+    }
+}
+
