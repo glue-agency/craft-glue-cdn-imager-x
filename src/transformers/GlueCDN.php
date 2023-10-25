@@ -5,12 +5,9 @@ namespace GlueAgency\CDN\transformers;
 use craft\base\Component;
 use craft\elements\Asset;
 
-use craft\helpers\UrlHelper;
 use GlueAgency\CDN\GlueTransformer;
 use GlueAgency\CDN\helpers\GlueCdnHelpers;
 use GlueAgency\CDN\models\GlueCDNTransformedImageModel;
-use GlueAgency\CDN\models\Settings as GlueCdnSettings;
-use spacecatninja\imagerx\services\ImagerService;
 use spacecatninja\imagerx\transformers\TransformerInterface;
 use spacecatninja\imagerx\exceptions\ImagerException;
 
@@ -22,10 +19,10 @@ class GlueCDN extends Component implements TransformerInterface
      * @param array $transforms
      *
      * @throws ImagerException
-     * @return array|null
      *
+     * @return array|null
      */
-    public function transform($image, array $transforms): ?array
+    public function transform($image, $transforms)
     {
         $transformedImages = [];
 
@@ -41,10 +38,10 @@ class GlueCDN extends Component implements TransformerInterface
      * @param array        $transform
      *
      * @throws ImagerException
-     * @return GlueCDNTransformedImageModel
      *
+     * @return GlueCDNTransformedImageModel
      */
-    private function getTransformedImage(Asset|string $image, array $transform): GlueCDNTransformedImageModel
+    private function getTransformedImage($image, $transform)
     {
         $glueCdnConfig = GlueTransformer::getInstance()->getSettings();
 

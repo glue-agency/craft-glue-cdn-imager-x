@@ -12,7 +12,7 @@ use GlueAgency\CDN\models\Settings as GlueCdnSettings;
 class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements TransformedImageInterface
 {
 
-    protected GlueCdnSettings $config;
+    protected $config;
 
     /**
      * ImgixTransformedImageModel constructor.
@@ -22,7 +22,7 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
      * @param array                $transform
      * @param GlueCdnSettings|null $config
      */
-    public function __construct(string $imageUrl = null, Asset|string $source = null, array $transform = [], GlueCdnSettings $config = null)
+    public function __construct($imageUrl = null, $source = null, $transform = [], $config = null)
     {
         $this->config = $config;
 
@@ -85,7 +85,7 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
      *
      * @return array
      */
-    protected function getSourceImageDimensions(Asset|string $source): array
+    protected function getSourceImageDimensions($source)
     {
         if ($source instanceof Asset) {
             return [$source->getWidth(), $source->getHeight()];
@@ -111,7 +111,7 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
      *
      * @return array
      */
-    protected function calculateTargetSize(array $transform, int $sourceWidth, int $sourceHeight): array
+    protected function calculateTargetSize($transform, $sourceWidth, $sourceHeight)
     {
         $ratio = $sourceWidth / $sourceHeight;
 

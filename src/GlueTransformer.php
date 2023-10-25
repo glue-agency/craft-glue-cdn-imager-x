@@ -2,7 +2,6 @@
 
 namespace GlueAgency\CDN;
 
-use craft\base\Model;
 use craft\base\Plugin;
 use GlueAgency\CDN\models\Settings;
 use GlueAgency\CDN\transformers\GlueCDN;
@@ -21,7 +20,7 @@ use yii\base\Event;
 class GlueTransformer extends Plugin
 {
 
-    public function init(): void
+    public function init()
     {
         parent::init();
 
@@ -34,7 +33,7 @@ class GlueTransformer extends Plugin
         );
     }
 
-    protected function createSettingsModel(): ?Model
+    protected function createSettingsModel()
     {
         return new Settings;
     }

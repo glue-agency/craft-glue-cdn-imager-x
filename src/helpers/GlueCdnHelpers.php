@@ -3,17 +3,16 @@
 namespace GlueAgency\CDN\helpers;
 
 use GlueAgency\CDN\GlueTransformer;
-use GlueAgency\CDN\transformers\GlueCDN;
 
 class GlueCdnHelpers
 {
 
-    public static function hasFocalPoints(array $transform): bool
+    public static function hasFocalPoints($transform)
     {
         return ! empty($transform['position']);
     }
 
-    public static function buildFocalPoints(array $transform): string
+    public static function buildFocalPoints($transform)
     {
         $position = $transform['position'] ?? [];
         [
@@ -27,7 +26,7 @@ class GlueCdnHelpers
         ]);
     }
 
-    public static function buildUrl(string|array $url, string|array $query = null): string
+    public static function buildUrl($url, $query = null)
     {
         if(is_string($url)) {
             $url = [$url];
