@@ -57,6 +57,7 @@ class GlueCDN extends Component implements TransformerInterface
         // Build the querystring parameters
         $query = [];
 
+        // Transforms
         if(isset($transform['width'])) {
             $query['w'] = $transform['width'];
         }
@@ -65,11 +66,87 @@ class GlueCDN extends Component implements TransformerInterface
             $query['h'] = $transform['height'];
         }
 
+        if(isset($transform['flip'])) {
+            // @todo 'h' will not work because it is considered a callable
+            // We need to remap h => horizontal and than back to h for the url builder.
+            // Might be best to move all transform keys to a separate builder
+
+            if($transform['flip'] == 'horizontal' || $transform['flip'] == 'h') {
+                $query['flip'] = 'h';
+            }
+
+            if($transform['flip'] == 'vertical' || $transform['flip'] == 'v') {
+                $query['flip'] = 'v';
+            }
+
+            if($transform['flip'] == 'both') {
+                $query['flip'] = 'both';
+            }
+        }
+
+        if(isset($transform['dpr'])) {
+            $query['dpr'] = $transform['dpr'];
+        }
+
+        if(isset($transform['bgColor'])) {
+            $query['bg'] = $transform['bgColor'];
+        }
+
+        if(isset($transform['border']) && $border = $transform['border']) {
+            if(isset($border['width']) && isset($border['color'])) {
+                $width = $border['width'];
+                $color = $border['color'];
+                $method = $border['method'] ?? 'expand';
+
+                $query['border'] = "{$width},{$color},{$method}";
+            }
+        }
+
+        // Effects
+        if(isset($transform['effects']) && $effects = $transform['effects']) {
+
+            if(isset($effects['brightness'])) {
+                $query['bri'] = $effects['brightness'];
+            }
+
+            if(isset($effects['contrast'])) {
+                $query['con'] = $effects['contrast'];
+            }
+
+            if(isset($effects['gamma'])) {
+                $query['gam'] = $effects['gamma'];
+            }
+
+            if(isset($effects['sharpen'])) {
+                $query['sharp'] = $effects['sharpen'];
+            }
+
+            if(isset($effects['blur'])) {
+                $query['blur'] = $effects['blur'];
+            }
+
+            if(isset($effects['pixelate'])) {
+                $query['pixel'] = $effects['pixelate'];
+            }
+
+            if(isset($effects['grayscale'])) {
+                if(!! $effects['grayscale']) {
+                    $query['filt'] = 'greyscale';
+                }
+
+                if(!! $effects['sepia']) {
+                    $query['filt'] = 'sepia';
+                }
+            }
+        }
+
+        // Mode
         $mode = $transform['mode'] ?? 'crop';
 
         switch($mode) {
             case 'stretch':
             case 'croponly':
+            case 'letterbox':
                 // not supported
 
                 break;

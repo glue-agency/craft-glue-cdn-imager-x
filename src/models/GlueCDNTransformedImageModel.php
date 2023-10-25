@@ -56,17 +56,20 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
             }
         } else if(isset($transform['width']) || isset($transform['height'])) {
             if($source !== null && $transform !== null) {
-                [
-                    $sourceWidth,
-                    $sourceHeight,
-                ] = $this->getSourceImageDimensions($source);
-                [
-                    $w,
-                    $h,
-                ] = $this->calculateTargetSize($transform, $sourceWidth, $sourceHeight);
+                [$sourceWidth, $sourceHeight,] = $this->getSourceImageDimensions($source);
+                if ((int)$sourceWidth === 0 || (int)$sourceHeight === 0) {
+                    if (isset($params['w'])) {
+                        $this->width = (int)$params['w'];
+                    }
+                    if (isset($params['h'])) {
+                        $this->height = (int)$params['h'];
+                    }
+                } else {
+                    [$w, $h,] = $this->calculateTargetSize($transform, $sourceWidth, $sourceHeight);
 
-                $this->width = $w;
-                $this->height = $h;
+                    $this->width = $w;
+                    $this->height = $h;
+                }
             }
         } else {
             // Neither is set, image is not resized. Just get dimensions and return.
