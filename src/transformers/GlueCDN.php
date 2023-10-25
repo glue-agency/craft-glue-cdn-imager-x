@@ -166,12 +166,6 @@ class GlueCDN extends Component implements TransformerInterface
 
         $url = GlueCdnHelpers::buildUrl($urlSegments, $query);
 
-        // Make secure if signToken is set
-//        if (!empty($profile->signToken)) {
-//            $bossToken = hash_hmac('sha256', parse_url($url, PHP_URL_PATH), $profile->signToken);
-//            $url .= "?bossToken=$bossToken";
-//        }
-
         return new GlueCDNTransformedImageModel($url, $image, $transform, $glueCdnConfig);
     }
 }
