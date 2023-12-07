@@ -45,9 +45,6 @@ class GlueCdnHelpers
             $query = array_merge($defaultQuery, $query);
         }
 
-        // Sort query params
-        ksort($query);
-
         // Build the new url with transformations
         $transformUrl = end($url) . '?' . http_build_query($query);
 
@@ -68,6 +65,10 @@ class GlueCdnHelpers
     {
         $signKey = GlueTransformer::getInstance()->getSettings()->signKey;
 
-        return md5("{$signKey}:{$url}");
+        ['scheme' => $scheme, 'host' => $host, 'path' => $path, 'query' => $query] = parse_url($url);
+        parse_str($query, $params);
+        ksort($params);
+
+        return md5($signKey . ':' . $scheme . '://' . $host . $path . '?' . http_build_query(array_filter($params)));
     }
 }
