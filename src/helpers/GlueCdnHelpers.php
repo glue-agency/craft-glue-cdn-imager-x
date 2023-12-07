@@ -45,30 +45,11 @@ class GlueCdnHelpers
             $query = array_merge($defaultQuery, $query);
         }
 
-        // Extract the source image url
-        [
-            'scheme' => $sourceScheme,
-            'host'   => $sourceHost,
-            'path'   => $sourcePath,
-            'query'  => $sourceQuery,
-        ] = parse_url(end($url)) + ['query' => ''];
-
-        if($sourceQuery) {
-            parse_str($sourceQuery, $result);
-
-            $query = array_merge($result, $query);
-        }
-
         // Sort query params
         ksort($query);
 
-        // Build source url
-        $transformUrl = http_build_url([
-            'scheme' => $sourceScheme,
-            'host'   => $sourceHost,
-            'path'   => $sourcePath,
-            'query'  => http_build_query($query),
-        ]);
+        // Build the new url with transformations
+        $transformUrl = end($url) . '?' . http_build_query($query);
 
         // Generate the signature
         $signature = self::generateSignature($transformUrl);
