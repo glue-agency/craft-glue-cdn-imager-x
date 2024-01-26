@@ -7,12 +7,12 @@ use GlueAgency\CDN\GlueTransformer;
 class GlueCdnHelpers
 {
 
-    public static function hasFocalPoints($transform)
+    public static function hasFocalPoints($transform): bool
     {
         return ! empty($transform['position']);
     }
 
-    public static function buildFocalPoints($transform)
+    public static function buildFocalPoints($transform): string
     {
         $position = $transform['position'] ?? [];
         [
@@ -26,7 +26,7 @@ class GlueCdnHelpers
         ]);
     }
 
-    public static function buildUrl($url, $query = null)
+    public static function buildUrl($url, $query = null): string
     {
         // Prepare url and query for parsing
         if(is_string($url)) {
@@ -61,7 +61,7 @@ class GlueCdnHelpers
         return rtrim(reset($url), '/') . '/' . $signedTransformUrl;
     }
 
-    public static function generateSignature(string $url)
+    public static function generateSignature(string $url): string
     {
         $signKey = GlueTransformer::getInstance()->getSettings()->signKey;
 

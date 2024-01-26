@@ -7,11 +7,11 @@ use craft\base\Model;
 class Settings extends Model
 {
 
-    public $baseUrl = '';
+    public string $baseUrl = '';
 
-    public $signKey = '';
+    public string $signKey = '';
 
-    public $getExternalImageDimensions = false;
+    public bool $getExternalImageDimensions = false;
 
-    public $defaultParams = [];
+    public array $defaultParams = [];
 }

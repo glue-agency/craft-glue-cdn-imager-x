@@ -14,15 +14,7 @@ use spacecatninja\imagerx\exceptions\ImagerException;
 class GlueCDN extends Component implements TransformerInterface
 {
 
-    /**
-     * @param Asset $image
-     * @param array $transforms
-     *
-     * @throws ImagerException
-     *
-     * @return array|null
-     */
-    public function transform($image, $transforms)
+    public function transform(Asset|string $image, array $transforms): ?array
     {
         $transformedImages = [];
 
@@ -33,15 +25,7 @@ class GlueCDN extends Component implements TransformerInterface
         return $transformedImages;
     }
 
-    /**
-     * @param Asset|string $image
-     * @param array        $transform
-     *
-     * @throws ImagerException
-     *
-     * @return GlueCDNTransformedImageModel
-     */
-    private function getTransformedImage($image, $transform)
+    private function getTransformedImage(Asset|string $image, array $transform): GlueCDNTransformedImageModel
     {
         $glueCdnConfig = GlueTransformer::getInstance()->getSettings();
 

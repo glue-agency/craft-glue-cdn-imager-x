@@ -2,6 +2,7 @@
 
 namespace GlueAgency\CDN;
 
+use craft\base\Model;
 use craft\base\Plugin;
 use GlueAgency\CDN\models\Settings;
 use GlueAgency\CDN\transformers\GlueCDN;
@@ -33,7 +34,7 @@ class GlueTransformer extends Plugin
         );
     }
 
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?Model
     {
         return new Settings;
     }
