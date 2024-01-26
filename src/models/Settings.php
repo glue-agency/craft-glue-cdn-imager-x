@@ -7,11 +7,11 @@ use craft\base\Model;
 class Settings extends Model
 {
 
-    public string $baseUrl = 'https://cdn.glue.be';
+    public $baseUrl = '';
 
-    public string $apiKey = '';
+    public $signKey = '';
 
-    public bool $getExternalImageDimensions = true;
+    public $getExternalImageDimensions = false;
 
-    public array $defaultParams = [];
+    public $defaultParams = [];
 }

@@ -3,17 +3,16 @@
 namespace GlueAgency\CDN\helpers;
 
 use GlueAgency\CDN\GlueTransformer;
-use GlueAgency\CDN\transformers\GlueCDN;
 
 class GlueCdnHelpers
 {
 
-    public static function hasFocalPoints(array $transform): bool
+    public static function hasFocalPoints($transform)
     {
         return ! empty($transform['position']);
     }
 
-    public static function buildFocalPoints(array $transform): string
+    public static function buildFocalPoints($transform)
     {
         $position = $transform['position'] ?? [];
         [
@@ -27,8 +26,9 @@ class GlueCdnHelpers
         ]);
     }
 
-    public static function buildUrl(string|array $url, string|array $query = null): string
+    public static function buildUrl($url, $query = null)
     {
+        // Prepare url and query for parsing
         if(is_string($url)) {
             $url = [$url];
         }
@@ -40,28 +40,35 @@ class GlueCdnHelpers
             // @todo throw exception
         }
 
+        // Add defaults to query
         if(! empty($defaultQuery = GlueTransformer::getInstance()->getSettings()->defaultParams)) {
             $query = array_merge($defaultQuery, $query);
         }
 
-        [
-            'scheme' => $sourceScheme,
-            'host'   => $sourceHost,
-            'path'   => $sourcePath,
-            'query'  => $sourceQuery,
-        ] = parse_url(end($url)) + ['query' => ''];
+        // Build the new url with transformations
+        $transformUrl = end($url) . '?' . http_build_query($query);
 
-        if($sourceQuery) {
-            parse_str($sourceQuery, $result);
+        // Generate the signature
+        $signature = self::generateSignature($transformUrl);
 
-            $query = array_merge($result, $query);
+        // Sign the url
+        if(parse_url($transformUrl, PHP_URL_QUERY)) {
+            $signedTransformUrl = $transformUrl . '&s=' . $signature;
+        } else {
+            $signedTransformUrl = $transformUrl . '?s=' . $signature;
         }
 
-        return rtrim(reset($url), '/') . '/' . http_build_url([
-            'scheme' => $sourceScheme,
-            'host'   => $sourceHost,
-            'path'   => $sourcePath,
-            'query'  => http_build_query($query),
-        ]);
+        return rtrim(reset($url), '/') . '/' . $signedTransformUrl;
+    }
+
+    public static function generateSignature(string $url)
+    {
+        $signKey = GlueTransformer::getInstance()->getSettings()->signKey;
+
+        ['scheme' => $scheme, 'host' => $host, 'path' => $path, 'query' => $query] = parse_url($url);
+        parse_str($query, $params);
+        ksort($params);
+
+        return md5($signKey . ':' . $scheme . '://' . $host . $path . '?' . http_build_query(array_filter($params)));
     }
 }

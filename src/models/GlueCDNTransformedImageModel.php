@@ -12,7 +12,7 @@ use GlueAgency\CDN\models\Settings as GlueCdnSettings;
 class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements TransformedImageInterface
 {
 
-    protected GlueCdnSettings $config;
+    protected $config;
 
     /**
      * ImgixTransformedImageModel constructor.
@@ -22,7 +22,7 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
      * @param array                $transform
      * @param GlueCdnSettings|null $config
      */
-    public function __construct(string $imageUrl = null, Asset|string $source = null, array $transform = [], GlueCdnSettings $config = null)
+    public function __construct($imageUrl = null, $source = null, $transform = [], $config = null)
     {
         $this->config = $config;
 
@@ -56,17 +56,20 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
             }
         } else if(isset($transform['width']) || isset($transform['height'])) {
             if($source !== null && $transform !== null) {
-                [
-                    $sourceWidth,
-                    $sourceHeight,
-                ] = $this->getSourceImageDimensions($source);
-                [
-                    $w,
-                    $h,
-                ] = $this->calculateTargetSize($transform, $sourceWidth, $sourceHeight);
+                [$sourceWidth, $sourceHeight,] = $this->getSourceImageDimensions($source);
+                if ((int)$sourceWidth === 0 || (int)$sourceHeight === 0) {
+                    if (isset($params['w'])) {
+                        $this->width = (int)$params['w'];
+                    }
+                    if (isset($params['h'])) {
+                        $this->height = (int)$params['h'];
+                    }
+                } else {
+                    [$w, $h,] = $this->calculateTargetSize($transform, $sourceWidth, $sourceHeight);
 
-                $this->width = $w;
-                $this->height = $h;
+                    $this->width = $w;
+                    $this->height = $h;
+                }
             }
         } else {
             // Neither is set, image is not resized. Just get dimensions and return.
@@ -85,7 +88,7 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
      *
      * @return array
      */
-    protected function getSourceImageDimensions(Asset|string $source): array
+    protected function getSourceImageDimensions($source)
     {
         if ($source instanceof Asset) {
             return [$source->getWidth(), $source->getHeight()];
@@ -111,7 +114,7 @@ class GlueCDNTransformedImageModel extends BaseTransformedImageModel implements 
      *
      * @return array
      */
-    protected function calculateTargetSize(array $transform, int $sourceWidth, int $sourceHeight): array
+    protected function calculateTargetSize($transform, $sourceWidth, $sourceHeight)
     {
         $ratio = $sourceWidth / $sourceHeight;
 
