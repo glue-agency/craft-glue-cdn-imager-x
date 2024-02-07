@@ -1,5 +1,9 @@
 # Release Notes for Glue CDN for Imager X
 
+## 3.1.2
+
+- Updated docs
+
 ## 3.1.1
 
 - Url Signature fix

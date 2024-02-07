@@ -10,10 +10,6 @@ This plugin requires Craft CMS 4.3.5 or later, and PHP 8.0.2 or later.
 
 You can install this plugin from the Plugin Store or with Composer.
 
-#### From the Plugin Store
-
-Go to the Plugin Store in your project’s Control Panel and search for “Glue CDN for Imager X”. Then press “Install”.
-
 #### With Composer
 
 Open your terminal and run the following commands:
@@ -26,5 +22,21 @@ cd /path/to/my-project.test
 composer require glue-agency/craft-glue-cdn-imager-x
 
 # tell Craft to install the plugin
-./craft plugin/install craft-glue-cdn-imager-x
+php craft plugin/install glue-cdn-imager-x
 ```
+
+## Configuration
+
+Create the `glue-cdn-imager-x.php` file in `/config` and add the following.
+
+```php
+return [
+    'baseUrl'       => rtrim(getenv('GLUE_CDN_DOMAIN'), '/'),
+    'signKey'       => getenv('GLUE_CDN_SIGN_KEY'),
+    'defaultParams' => [
+        'dpr' => 2,
+    ],
+];
+```
+
+Update the Imager-X transformer to `glue-cdn`.
