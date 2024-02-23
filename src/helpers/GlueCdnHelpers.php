@@ -45,11 +45,14 @@ class GlueCdnHelpers
             $query = array_merge($defaultQuery, $query);
         }
 
-        // Build the new url with transformations
-        $transformUrl = end($url) . '?' . http_build_query($query);
+        // Encode the path url
+        $encodedPathUrl = rawurlencode(end($url));
 
         // Generate the signature
-        $signature = self::generateSignature($transformUrl);
+        $signature = self::generateSignature($encodedPathUrl, $query);
+
+        // Build the transform url
+        $transformUrl = $encodedPathUrl . '?' . http_build_query($query);
 
         // Sign the url
         if(parse_url($transformUrl, PHP_URL_QUERY)) {
@@ -61,14 +64,12 @@ class GlueCdnHelpers
         return rtrim(reset($url), '/') . '/' . $signedTransformUrl;
     }
 
-    public static function generateSignature(string $url)
+    public static function generateSignature(string $url, array $params)
     {
         $signKey = GlueTransformer::getInstance()->getSettings()->signKey;
 
-        ['scheme' => $scheme, 'host' => $host, 'path' => $path, 'query' => $query] = parse_url($url);
-        parse_str($query, $params);
         ksort($params);
 
-        return md5($signKey . ':' . $scheme . '://' . $host . $path . '?' . http_build_query(array_filter($params)));
+        return md5($signKey . ':' . $url . '?' . http_build_query(array_filter($params)));
     }
 }

@@ -1,5 +1,9 @@
 # Release Notes for Glue CDN for Imager X
 
+## 3.2.0
+
+- Encode the request url and path of the source image
+
 ## 3.1.2
 
 - Updated docs
