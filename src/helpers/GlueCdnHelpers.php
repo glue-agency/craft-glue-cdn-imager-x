@@ -26,7 +26,7 @@ class GlueCdnHelpers
         ]);
     }
 
-    public static function buildUrl($url, $query = null): string
+    public static function buildUrl($url, $query = []): string
     {
         // Prepare url and query for parsing
         if(is_string($url)) {
