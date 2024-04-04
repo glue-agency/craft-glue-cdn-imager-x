@@ -22,7 +22,6 @@ class ImagesController extends Controller
      */
     public function actionPurge(): Response
     {
-        $this->requireAcceptsJson();
         $this->requirePostRequest();
 
         if (!Craft::$app->request->getRequiredBodyParam('asset_urls')) {
@@ -40,7 +39,7 @@ class ImagesController extends Controller
         if (GlueTransformer::$plugin->glueCdnService->purgeCdnImages($asset_urls)) {
             $returnData = [
                 'success' => true,
-                'message' => 'Urls succesfully purged',
+                'message' => 'Images succesfully purged',
             ];
         }
 

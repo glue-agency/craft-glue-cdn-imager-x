@@ -37,7 +37,7 @@ class GlueCdnService extends Component
 
             $client->post('/api/purge');
         } catch (ClientException $e) {
-            dd($e->getCode());
+            return $e->getCode();
         }
 
         return true;

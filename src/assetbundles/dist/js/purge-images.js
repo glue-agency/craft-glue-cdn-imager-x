@@ -7,16 +7,19 @@ if (typeof Craft.GlueCdn === typeof undefined) {
   // eslint-disable-next-line no-undef
   Craft.GlueCdn = Garnish.Base.extend(
     {
+      purgeUrl: Craft.getActionUrl('glue-cdn-imager-x/images/purge'),
       assetModal: null,
       currentElementType: 'Asset',
       $addAssetButton: $('#glue-cdn-utility #addAssetsButton'),
       $assetInput: $('#glue-cdn-utility #imageUrls'),
       $assetList: $('#glue-cdn-utility #imageList'),
       $purgeButton: $('#glue-cdn-utility #purgeButton'),
+      $purgeSingleButton: $('#purge-single-btn'),
 
       init() {
         this.addListener(this.$addAssetButton, 'activate', 'showModal')
         this.addListener(this.$purgeButton, 'activate', 'purgeImages')
+        this.addListener(this.$purgeSingleButton, 'activate', 'purgeSingleImage')
       },
 
       /**
@@ -34,7 +37,9 @@ if (typeof Craft.GlueCdn === typeof undefined) {
        */
       createModal(elementType, elementSources) {
         return Craft.createElementSelectorModal(elementType, {
-          criteria: {},
+          criteria: {
+            kind: 'image',
+          },
           showSiteMenu: true,
           sources: elementSources,
           multiSelect: true,
@@ -61,11 +66,28 @@ if (typeof Craft.GlueCdn === typeof undefined) {
       },
 
       purgeImages() {
-        const url = Craft.getActionUrl('glue-cdn-imager-x/images/purge');
         const data = {
           asset_urls: this.$assetInput.val()
         }
-        Craft.postActionRequest(url, data, $.proxy((response, textStatus) => {
+        Craft.postActionRequest(this.purgeUrl, data, $.proxy((response, textStatus) => {
+          if (textStatus === 'success') {
+            if (response.success) {
+              this.$assetList.html('');
+              this.$assetInput.val('');
+              this.$purgeButton.addClass('hidden');
+              Craft.cp.displayNotice(response.message);
+            } else {
+              Craft.cp.displayError(response.message);
+            }
+          }
+        }, this));
+      },
+
+      purgeSingleImage(e) {
+        const data = {
+          asset_urls: e.target.dataset.assetUrl
+        }
+        Craft.postActionRequest(this.purgeUrl, data, $.proxy((response, textStatus) => {
           if (textStatus === 'success') {
             if (response.success) {
               this.$assetList.html('');

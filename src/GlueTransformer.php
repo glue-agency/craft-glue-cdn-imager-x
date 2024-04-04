@@ -7,11 +7,14 @@ use craft\base\Element;
 use craft\base\Model;
 use craft\base\Plugin;
 use craft\elements\Asset;
+use craft\events\DefineHtmlEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\helpers\Html;
 use craft\services\Utilities;
 use craft\web\UrlManager;
+use GlueAgency\CDN\assetbundles\PurgeImagesAssets;
 use GlueAgency\CDN\elements\actions\PurgeImagesElementAction;
 use GlueAgency\CDN\models\Settings;
 use GlueAgency\CDN\services\GlueCdnService;
@@ -20,6 +23,7 @@ use GlueAgency\CDN\utilities\PurgeImages;
 use spacecatninja\imagerx\events\RegisterTransformersEvent;
 use spacecatninja\imagerx\ImagerX;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 
 /**
  * Glue CDN for Imager X plugin
@@ -70,6 +74,41 @@ class GlueTransformer extends Plugin
                     return;
                 }
                 $event->actions[] = PurgeImagesElementAction::class;
+            }
+        );
+
+        Event::on(
+            Asset::class,
+            Element::EVENT_DEFINE_ADDITIONAL_BUTTONS,
+            function (DefineHtmlEvent $event) {
+                /** @var Asset $asset */
+                $asset = $event->sender;
+
+                if(!getenv('GLUE_CDN_API_TOKEN') || $asset->kind !== Asset::KIND_IMAGE) {
+                    return;
+                }
+                $assetUrl = $asset->getUrl();
+                $html = Html::button(Craft::t('app', 'Purge CDN'), [
+                    'id' => 'purge-single-btn',
+                    'class' => 'btn',
+                    'data' => [
+                        'icon' => 'trash',
+                        'asset-url' => $assetUrl
+                    ],
+                    'aria' => [
+                        'label' => Craft::t('app', 'Purge CDN'),
+                    ],
+                ]);
+
+                try {
+                    Craft::$app->getView()->registerAssetBundle(PurgeImagesAssets::class);
+                } catch (InvalidConfigException) {
+                    return Craft::t('glue-cdn-imager-x', 'Could not load asset bundle');
+                }
+
+                Craft::$app->getView()->registerJs("new Craft.GlueCdn();");
+
+                $event->html .= $html;
             }
         );
 

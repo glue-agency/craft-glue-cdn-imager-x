@@ -4,6 +4,7 @@ namespace GlueAgency\CDN\elements\actions;
 
 use Craft;
 use craft\base\ElementAction;
+use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use Exception;
 use GlueAgency\CDN\GlueTransformer;
@@ -31,7 +32,7 @@ class PurgeImagesElementAction extends ElementAction
     {
         try {
             $assetUrls = [];
-            foreach ($query->all() as $asset) {
+            foreach ($query->kind(Asset::KIND_IMAGE)->all() as $asset) {
                 $assetUrls[] = $asset->getUrl();
             }
 
