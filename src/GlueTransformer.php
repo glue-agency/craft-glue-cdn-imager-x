@@ -60,7 +60,7 @@ class GlueTransformer extends Plugin
             }
         );
 
-        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES, function (RegisterComponentTypesEvent $event) {
+        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITIES, function (RegisterComponentTypesEvent $event) {
             if(!getenv('GLUE_CDN_API_TOKEN')) {
                 return;
             }
