@@ -128,10 +128,17 @@ class GlueCDN extends Component implements TransformerInterface
         $mode = $transform['mode'] ?? 'crop';
 
         switch($mode) {
-            case 'stretch':
             case 'croponly':
             case 'letterbox':
                 // not supported
+
+                break;
+            case 'stretch':
+                $query['fit'] = 'stretch';
+
+                break;
+            case 'max':
+                $query['fit'] = 'max';
 
                 break;
             case 'fit':
